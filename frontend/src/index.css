@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+    --color-sunshine-yellow: #F9C74B;
+    --color-cherry-pink: #F49FB0;
+    --color-penny-copper: #B66E35;
+    --color-deep-charcoal: #2E2E2E;
+    --color-soft-brown: #E8D1B6;
+}
+
+@tailwind utilities;

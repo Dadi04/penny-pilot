@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Models;
 
@@ -11,9 +12,11 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517191750_AddedAccountCategoryAndTransactionModels")]
+    partial class AddedAccountCategoryAndTransactionModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,12 +79,7 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubcategoryId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SubcategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -116,9 +114,6 @@ namespace backend.Migrations
                     b.PrimitiveCollection<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("Time")
-                        .HasColumnType("time");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -126,15 +121,6 @@ namespace backend.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("backend.Models.Category", b =>
-                {
-                    b.HasOne("backend.Models.Category", "Subcategory")
-                        .WithMany()
-                        .HasForeignKey("SubcategoryId");
-
-                    b.Navigation("Subcategory");
                 });
 
             modelBuilder.Entity("backend.Models.Transaction", b =>

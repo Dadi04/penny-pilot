@@ -1,52 +1,19 @@
-import { useEffect, useState } from "react"
-import "./App.css"
-import mascotTransparent from "./assets/mascot/mascot-transparent.png"
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Dashboard from "./pages/Dashboard";
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  summary: string;
-}
-
-function App() {
-  const [forecasts, setForecasts] = useState<WeatherForecast[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/WeatherForecast")
-      .then(res => {
-        if (!res.ok) throw new Error(res.statusText);
-        return res.json();
-      })
-      .then((data: WeatherForecast[]) => {
-        setForecasts(data);
-      })
-      .catch(err => {
-        console.error("Failed to load forecasts", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <div>Loading…</div>;
-
+const App: React.FC = () => {
   return (
-    <div className="p-4 space-y-2">
-      <div className="flex gap-3 items-center">
-        <img src={mascotTransparent} alt="mascotTransparent" className="h-30" />
-        <h1 className="text-2xl font-bold">Penny Pilot</h1>
+    <Router>
+      <div className="min-h-screen flex flex-col bg-[#f2f2f2]">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
       </div>
-      <ul>
-        {forecasts.map((f, i) => (
-          <li key={i} className="border-b py-2">
-            <strong>{f.date}</strong>: {f.summary} ({f.temperatureC}°C)
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    </Router>
+  )
 }
 
-
-export default App
+export default App;
