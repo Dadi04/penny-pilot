@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Models;
 
@@ -11,9 +12,11 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250518191318_AddedTypeToTransactionModel")]
+    partial class AddedTypeToTransactionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,9 +68,6 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -79,9 +79,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SubcategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("SubcategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -137,9 +140,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Category", b =>
                 {
-                    b.HasOne("backend.Models.Category", null)
-                        .WithMany("Subcategory")
-                        .HasForeignKey("CategoryId");
+                    b.HasOne("backend.Models.Category", "Subcategory")
+                        .WithMany()
+                        .HasForeignKey("SubcategoryId");
+
+                    b.Navigation("Subcategory");
                 });
 
             modelBuilder.Entity("backend.Models.Transaction", b =>
@@ -159,11 +164,6 @@ namespace backend.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("backend.Models.Category", b =>
-                {
-                    b.Navigation("Subcategory");
                 });
 #pragma warning restore 612, 618
         }

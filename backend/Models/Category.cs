@@ -10,7 +10,7 @@ namespace backend.Models {
         public int Id { get; set; }
         public string Emoji { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public Category? Subcategory { get; set; } = new Category();
+        public List<Category>? Subcategory { get; set; } = new List<Category>();
         public string? Description { get; set; } = string.Empty;
     }
 }
