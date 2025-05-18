@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type FC, type SetStateAction } from "react";
+import { useState, useRef, useEffect, type Dispatch, type FC, type SetStateAction } from "react";
 import AddAccountDialog from "./AddAccountDialog";
 
 interface Account {
@@ -85,6 +85,67 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
     const [fromCurrencyDropdown, setFromCurrencyDropdown] = useState<boolean>(false);
     const [toCurrencyDropdown, setToCurrencyDropdown] = useState<boolean>(false);
 
+    const accountDropdownRef = useRef<HTMLDivElement>(null);
+    const fromAccountDropdownRef = useRef<HTMLDivElement>(null);
+    const toAccountDropdownRef = useRef<HTMLDivElement>(null);
+    const paymentTypeDropdownRef = useRef<HTMLDivElement>(null);
+    const categoryDropdownRef = useRef<HTMLDivElement>(null);
+    const currencyDropdownRef = useRef<HTMLDivElement>(null);
+    const fromCurrencyDropdownRef = useRef<HTMLDivElement>(null);
+    const toCurrencyDropdownRef = useRef<HTMLDivElement>(null);
+
+    const closeAllDropdowns = () => {
+        setAccountDropdown(false);
+        setFromAccountDropdown(false);
+        setToAccountDropdown(false);
+        setPaymentTypeDropdown(false);
+        setCategoryDropdown(false);
+        setCurrencyDropdown(false);
+        setFromCurrencyDropdown(false);
+        setToCurrencyDropdown(false);
+    };
+
+    const toggleDropdown = (
+        dropdownState: boolean,
+        setDropdownState: Dispatch<SetStateAction<boolean>>
+    ) => {
+        closeAllDropdowns();
+        if (!dropdownState) {
+            setDropdownState(true);
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                accountDropdownRef.current && 
+                !accountDropdownRef.current.contains(event.target as Node) &&
+                fromAccountDropdownRef.current && 
+                !fromAccountDropdownRef.current.contains(event.target as Node) &&
+                toAccountDropdownRef.current && 
+                !toAccountDropdownRef.current.contains(event.target as Node) &&
+                paymentTypeDropdownRef.current && 
+                !paymentTypeDropdownRef.current.contains(event.target as Node) &&
+                categoryDropdownRef.current && 
+                !categoryDropdownRef.current.contains(event.target as Node) &&
+                currencyDropdownRef.current && 
+                !currencyDropdownRef.current.contains(event.target as Node) &&
+                fromCurrencyDropdownRef.current && 
+                !fromCurrencyDropdownRef.current.contains(event.target as Node) &&
+                toCurrencyDropdownRef.current && 
+                !toCurrencyDropdownRef.current.contains(event.target as Node)
+            ) {
+                closeAllDropdowns();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/90 text-deep-charcoal z-150">
             <div className="w-[1200px] relative bg-white pt-6 rounded-lg shadow-lg">
@@ -110,8 +171,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                     <>
                                         <div>
                                             <p>Account</p>
-                                            <div className="relative">
-                                                <div onClick={() => setAccountDropdown(prev => !prev)} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
+                                            <div className="relative" ref={accountDropdownRef}>
+                                                <div onClick={() => toggleDropdown(accountDropdown, setAccountDropdown)} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
                                                     {account ? (
                                                         <div className="flex items-center gap-4 text-deep-charcoal">
                                                             <p style={{backgroundColor: account.color}}>{account.type}</p>
@@ -167,8 +228,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                             </div>
                                             <div className="flex-1/3">
                                                 <p>Currency</p>
-                                                <div className="relative">
-                                                    <div onClick={() => setCurrencyDropdown(prev => !prev)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
+                                                <div className="relative" ref={currencyDropdownRef}>
+                                                    <div onClick={() => toggleDropdown(currencyDropdown, setCurrencyDropdown)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
                                                         <p>{currency}</p>
                                                     </div>
                                                     {currencyDropdown && (
@@ -193,8 +254,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                         <div className="flex justify-between items-center">
                                             <div className="w-[45%]">
                                                 <p>From account</p>
-                                                <div className="relative">
-                                                    <div onClick={() => {setFromAccountDropdown(prev => !prev); setToAccountDropdown(false)}} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
+                                                <div className="relative" ref={fromAccountDropdownRef}>
+                                                    <div onClick={() => toggleDropdown(fromAccountDropdown, setFromAccountDropdown)} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
                                                         {fromAccount ? (
                                                             <div className="flex items-center gap-4 text-deep-charcoal">
                                                                 <p style={{backgroundColor: fromAccount.color}}>{fromAccount.type}</p>
@@ -240,8 +301,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                                     </div>
                                                     <div className="w-1/3">
                                                         <p>Currency</p>
-                                                        <div className="relative">
-                                                            <div onClick={() => setFromCurrencyDropdown(prev => !prev)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
+                                                        <div className="relative" ref={fromCurrencyDropdownRef}>
+                                                            <div onClick={() => toggleDropdown(fromCurrencyDropdown, setFromCurrencyDropdown)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
                                                                 <p>{currency}</p>
                                                                 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
                                                                     <polygon points="2,6 12,18 22,6" />
@@ -270,8 +331,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                             </svg>
                                             <div className="w-[45%]">
                                                 <p>To account</p>
-                                                <div className="relative">
-                                                    <div onClick={() => {setToAccountDropdown(prev => !prev); setFromAccountDropdown(false)}} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
+                                                <div className="relative" ref={toAccountDropdownRef}>
+                                                    <div onClick={() => toggleDropdown(toAccountDropdown, setToAccountDropdown)} className="flex items-center justify-between bg-white p-2 border rounded cursor-pointer">
                                                         {toAccount ? (
                                                             <div className="flex items-center gap-4 text-deep-charcoal">
                                                                 <p style={{backgroundColor: toAccount.color}}>{toAccount.type}</p>
@@ -318,8 +379,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                                     </div>
                                                     <div className="w-1/3">
                                                         <p>Currency</p>
-                                                        <div className="relative">
-                                                            <div onClick={() => setToCurrencyDropdown(prev => !prev)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
+                                                        <div className="relative" ref={toCurrencyDropdownRef}>
+                                                            <div onClick={() => toggleDropdown(toCurrencyDropdown, setToCurrencyDropdown)} className="flex justify-between items-center bg-white text-deep-charcoal p-2 border border-gray-100 cursor-pointer">
                                                                 <p>{currency}</p>
                                                                 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
                                                                     <polygon points="2,6 12,18 22,6" />
@@ -350,8 +411,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                         <div className="grid grid-cols-2 px-6 py-2 gap-4">
                             <div>
                                 <p>Category</p>
-                                <div className="relative">
-                                    <div onClick={() => setCategoryDropdown(prev => !prev)} className="flex items-center justify-between p-2 border border-gray-100 cursor-pointer">
+                                <div className="relative" ref={categoryDropdownRef}>
+                                    <div onClick={() => toggleDropdown(categoryDropdown, setCategoryDropdown)} className="flex items-center justify-between p-2 border border-gray-100 cursor-pointer">
                                         {category ? (
                                             <div className="flex items-center gap-2 text-deep-charcoal">
                                                 <span>{category.emoji}</span>
@@ -406,7 +467,7 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                             <p className="text-blue-500 text-center underline cursor-pointer">Add and create another</p>
                         </div>
                     </div>
-                    <div className="w-[30%] flex flex-col bg-neutral-200 p-6 gap-7 overflow-hidden">
+                    <div className="w-[30%] flex flex-col bg-neutral-200 p-6 gap-7 rounded-br-lg">
                         <div>
                             <p>Payment name</p>
                             <input type="text" className="w-full p-2 border border-gray-100 bg-white outline-none" />
@@ -417,8 +478,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                         </div>
                         <div>
                             <p>Payment type</p>
-                            <div className="relative">
-                                <div onClick={() => setPaymentTypeDropdown(prev => !prev)} className="flex items-center justify-between bg-white p-2 border border-gray-100 cursor-pointer">
+                            <div className="relative" ref={paymentTypeDropdownRef}>
+                                <div onClick={() => toggleDropdown(paymentTypeDropdown, setPaymentTypeDropdown)} className="flex items-center justify-between bg-white p-2 border border-gray-100 cursor-pointer">
                                     {paymentType ? (
                                         <span className="text-deep-charcoal">{paymentType}</span>
                                     ) : (
@@ -426,7 +487,7 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                     )}
                                 </div>
                                 {paymentTypeDropdown && (
-                                    <div className="absolute mt-1 w-full bg-neutral-50 rounded shadow-lg z-10 max-h-40 overflow-y-auto">
+                                    <div className="absolute mt-1 w-full bg-neutral-50 rounded shadow-lg z-50 max-h-45 overflow-y-auto">
                                         {PAYMENT_TYPES.map(type => (
                                             <div 
                                                 key={type}
