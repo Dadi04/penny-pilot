@@ -8,8 +8,11 @@ namespace backend.Models {
     public class Transaction {
         [Key]
         public int Id { get; set; }
-        public Account Account { get; set; } = new Account();
-        public Category Category { get; set; } = new Category();
+        public int AccountId { get; set; }
+        public Account? Account { get; set; } = new Account();
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; } = new Category();
+        public string Name { get; set; } = string.Empty; 
         public decimal Amount { get; set; }
         public string Currency { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.Now.Date;

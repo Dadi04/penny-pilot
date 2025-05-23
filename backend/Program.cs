@@ -1,5 +1,7 @@
-using backend.Models;
 using Microsoft.EntityFrameworkCore;
+
+using backend.Models;
+using backend.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,8 @@ app.MapGet("/api/weatherforecast", () => {
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapCreateTransactionEndpoint();
 
 app.Run();
 
