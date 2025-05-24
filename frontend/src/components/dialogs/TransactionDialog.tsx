@@ -1,37 +1,10 @@
 import { useState, useRef, useEffect, type Dispatch, type FC, type SetStateAction } from "react";
+
+import type { Transaction } from "../../interfaces/Transaction";
+import type { Account } from "../../interfaces/Account";
+import type { Category } from "../../interfaces/Category";
+
 import AddAccountDialog from "./AddAccountDialog";
-
-interface Transaction {
-    accountId: number;
-    categoryId: number;
-    amount: number;
-    currency: string;
-    name: string;
-    date: any;
-    time: any;
-    type: string;
-    description?: string;
-    tags?: string[];
-    location?: string;
-}
-
-interface Account {
-    id: number;
-    name: string;
-    type: string;
-    balance: number;
-    currency: string;
-    color: string;
-    description?: string;
-}
-
-interface Category {
-    id: number;
-    emoji: string;
-    name: string;
-    subcategory?: Category[];
-    description?: string;
-}
 
 const PAYMENT_TYPES = ["Cash", "Credit Card", "Debit Card", "Transfer", "Voucher", "Mobile Payment"];
 
@@ -178,7 +151,8 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                 time: time,
                 name: name,
                 description: description ?? "",
-                type: paymentType,
+                transactionType: transactionMode,
+                paymentType: paymentType,
                 location: location  ?? "",
             }
 
@@ -318,7 +292,7 @@ const TransactionDialog: FC<{setNewTransaction: Dispatch<SetStateAction<boolean>
                                                                     <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                                                                 </svg>
                                                             )}
-                                                            <input type="number" onChange={(e) => setAmount(parseFloat(e.target.value))} placeholder="0" className="w-full text-right outline-none border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                                            <input type="number" onChange={(e) => setAmount(parseFloat(e.target.value))} placeholder="0" step=".001" className="w-full text-right outline-none border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                                                         </div>
                                                         {errors.amount && <p className="text-red-500 text-sm mt-1">{errors.amount}</p>}
                                                     </div>

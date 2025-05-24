@@ -17,7 +17,8 @@ namespace backend.Models {
         public string Currency { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.Now.Date;
         public TimeSpan Time { get; set; } = DateTime.Now.TimeOfDay;
-        public string Type { get; set; } = string.Empty;
+        public string TransactionType { get; set; } = string.Empty;
+        public string PaymentType { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public List<string>? Tags { get; set; } = new List<string>();
         public string? Location { get; set; } = string.Empty;

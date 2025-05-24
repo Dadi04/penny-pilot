@@ -50,6 +50,7 @@ app.MapGet("/api/weatherforecast", () => {
 .WithName("GetWeatherForecast");
 
 app.MapCreateTransactionEndpoint();
+app.MapGetAllTransactionsEndpoint();
 
 app.Run();
 

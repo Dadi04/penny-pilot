@@ -1,26 +1,24 @@
 import { useEffect, useState, type FC } from "react"
 
-interface WeatherForecast {
-    date: string;
-    temperatureC: number;
-    summary: string;
-}
+import type { Transaction } from "../interfaces/Transaction";
+// import type { Account } from "../interfaces/Account";
+// import type { Category } from "../interfaces/Category";
 
 const Dashboard: FC = () => {
-    const [forecasts, setForecasts] = useState<WeatherForecast[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("/api/WeatherForecast")
+        fetch("/api/get-all-transactions")
         .then(res => {
             if (!res.ok) throw new Error(res.statusText);
             return res.json();
         })
-        .then((data: WeatherForecast[]) => {
-            setForecasts(data);
+        .then((data: Transaction[]) => {
+            setTransactions(data);
         })
         .catch(err => {
-            console.error("Failed to load forecasts", err);
+            console.error("Failed to load transactions", err);
         })
         .finally(() => {
             setLoading(false);
@@ -30,14 +28,28 @@ const Dashboard: FC = () => {
     if (loading) return <div>Loading…</div>;
 
     return (
-        <div className="p-4 space-y-2">
-        <ul>
-            {forecasts.map((f, i) => (
-            <li key={i} className="border-b py-2">
-                <strong>{f.date}</strong>: {f.summary} ({f.temperatureC}°C)
-            </li>
-            ))}
-        </ul>
+        <div>
+            <div className="w-1/2">
+                {transactions.map((transaction, i) => (
+                    <div key={i} className="border-b py-2">
+                        <div>
+                            {transaction.categoryId}  {/* icon of the category */}
+                        </div>
+                        <div>
+                            <p>{transaction.name} - {transaction.categoryId}</p> {/* name of the category */}
+                            <p>{transaction.accountId} {transaction.accountId}</p> {/* color and name of account */}
+                        </div>
+                        <div>
+                            <div className={`flex ${transaction.transactionType === "Expense" ? "text-red-500" : transaction.transactionType === "Income" ? "text-green-500" : "text-blue-500"}`}>
+                                <p>{transaction.transactionType === "Expense" ? "-" : transaction.transactionType === "Income" ? "+" : ""}</p>
+                                <p>{transaction.currency} {transaction.amount}</p>
+                            </div>
+                            <p>{transaction.date}</p>
+                            <p>{transaction.time}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
